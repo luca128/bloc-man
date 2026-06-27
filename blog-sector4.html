@@ -811,19 +811,28 @@
   if(cf){cf.addEventListener('submit', function(e) {
     e.preventDefault();
     const form = e.target;
-    form.action = 'https://formsubmit.co/contact@blocmansrl.ro';
-    form.method = 'POST';
-    ['_captcha','_subject','_template'].forEach(n => {
-      if(!form.querySelector('[name="'+n+'"]')) {
-        const i = document.createElement('input');
-        i.type = 'hidden'; i.name = n;
-        i.value = n === '_captcha' ? 'false' : n === '_subject' ? 'Solicitare BlocMan SRL' : 'table';
-        form.appendChild(i);
-      }
-    });
+    const get = name => (form.querySelector('[name="'+name+'"]') || {}).value || '';
+    const subject = encodeURIComponent('Solicitare BlocMan SRL');
+    const body = encodeURIComponent(
+      'Nume: ' + get('nume') + '
+' +
+      'Telefon: ' + get('telefon') + '
+' +
+      'Email: ' + get('email') + '
+' +
+      'Adresa imobil: ' + get('adresa') + '
+' +
+      'Nr. apartamente: ' + get('apartamente') + '
+
+' +
+      'Mesaj:
+' + get('mesaj')
+    );
+    window.location.href = 'mailto:contact@blocmansrl.ro?subject=' + subject + '&body=' + body;
     const btn = document.getElementById('submitBtn');
-    if(btn){ btn.textContent = 'Se trimite...'; btn.disabled = true; }
-    form.submit();
+    const note = document.getElementById('formNote');
+    if(btn){ btn.textContent = 'Se deschide aplicația mail...'; btn.style.background='#16a34a'; btn.style.color='#fff'; }
+    if(note) note.textContent = 'Alege aplicația de mail pentru a trimite mesajul.';
   });}
 
 </script>
