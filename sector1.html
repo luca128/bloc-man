@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0" />
   <title>Administrare Blocuri Sector 1 București | BlocMan SRL</title>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"/>
   <meta name="keywords" content="administrare blocuri sector 1, administrare bloc sector 1 bucuresti, administrator bloc sector 1, firma administrare blocuri sector 1, administrator atestat sector 1, administrare asociatie proprietari sector 1, administrare financiara bloc sector 1, administrare fiscala bloc sector 1, administrare tehnica bloc sector 1, intretinere bloc sector 1, curatenie bloc sector 1, servicii juridice asociatie sector 1, dispecerat tehnic 24 7 sector 1, platforma online administrare sector 1, oferta administrare bloc sector 1, pret administrare bloc sector 1, administrare imobile sector 1, administrare blocuri bucuresti, administrator bloc atestat legea 196 2018, firma administrare blocuri bucuresti, blocman srl administrare, sector 1 Aviației, Băneasa, Domenii, Floreasca, Dorobanți"/>
     <link rel="alternate" hreflang="ro" href="https://blocmansrl.ro/sector1.html"/>
@@ -694,6 +695,7 @@
       <input type="text" name="adresa" placeholder="Adresa imobilului *" required />
       <input type="number" name="apartamente" placeholder="Număr apartamente *" min="1" required />
       <textarea name="mesaj" placeholder="Mesaj sau întrebări suplimentare..."></textarea>
+      <div class="cf-turnstile" data-sitekey="0x4AAAAAAAsQBiUwYh38B4RI" data-theme="light" style="margin-bottom:8px;"></div>
       <button type="submit" id="submitBtn">Trimite solicitarea</button>
       <p class="c-note" id="formNote">Vei primi un răspuns în cel mai scurt timp posibil.</p>
     </form>
@@ -815,30 +817,33 @@
   });
     document.getElementById('contactForm').addEventListener('submit', function(e) {
     e.preventDefault();
+    const tsToken = document.querySelector('[name="cf-turnstile-response"]');
+    if(!tsToken || !tsToken.value) {
+      alert('Te rugăm să completezi verificarea de securitate.');
+      return;
+    }
     const form = e.target;
-    const get = name => (form.querySelector('[name="'+name+'"]') || {}).value || '';
+    const get = function(name) {
+      const el = form.querySelector('[name="' + name + '"]');
+      return el ? el.value : '';
+    };
     const subject = encodeURIComponent('Solicitare BlocMan SRL');
     const body = encodeURIComponent(
-      'Nume: ' + get('nume') + '
-' +
-      'Telefon: ' + get('telefon') + '
-' +
-      'Email: ' + get('email') + '
-' +
-      'Adresa imobil: ' + get('adresa') + '
-' +
-      'Nr. apartamente: ' + get('apartamente') + '
-
-' +
-      'Mesaj:
-' + get('mesaj')
+      'Nume: ' + get('nume') + '%0A' +
+      'Telefon: ' + get('telefon') + '%0A' +
+      'Email: ' + get('email') + '%0A' +
+      'Adresa imobil: ' + get('adresa') + '%0A' +
+      'Nr. apartamente: ' + get('apartamente') + '%0A%0A' +
+      'Mesaj: ' + get('mesaj')
     );
     window.location.href = 'mailto:contact@blocmansrl.ro?subject=' + subject + '&body=' + body;
     const btn = document.getElementById('submitBtn');
     const note = document.getElementById('formNote');
-    if(btn){ btn.textContent = 'Se deschide aplicația mail...'; btn.style.background='#16a34a'; btn.style.color='#fff'; }
-    if(note) note.textContent = 'Alege aplicația de mail pentru a trimite mesajul.';
+    if(btn){ btn.textContent = 'Se deschide aplicatia mail...'; btn.style.background='#16a34a'; btn.style.color='#fff'; }
+    if(note) note.textContent = 'Alege aplicatia de mail pentru a trimite mesajul.';
   });
+
+  
 
   
 </script>

@@ -4,6 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=5.0"/>
   <title>Soft Administrare Blocuri – Platformă Digitală | BlocMan SRL</title>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"/>
   <meta name="keywords" content="soft administrare blocuri, platforma online administrare bloc, aplicatie administrare asociatie proprietari, acces online situatie financiara bloc, plata online intretinere, software administrare blocuri"/>
     <link rel="alternate" hreflang="ro" href="https://blocmansrl.ro/servicii-soft-administrare.html"/>
@@ -694,6 +695,7 @@
       <input type="text" name="adresa" placeholder="Adresa imobilului *" required/>
       <input type="number" name="apartamente" placeholder="Număr apartamente *" min="1" required/>
       <textarea name="mesaj" placeholder="Mesaj sau întrebări suplimentare..."></textarea>
+      <div class="cf-turnstile" data-sitekey="0x4AAAAAAAsQBiUwYh38B4RI" data-theme="light" style="margin-bottom:8px;"></div>
       <button type="submit" id="submitBtn">Trimite solicitarea</button>
       <p class="c-note" id="formNote">Vei primi un răspuns în cel mai scurt timp posibil.</p>
     </form>
@@ -812,30 +814,33 @@
   document.querySelectorAll('.mob-menu a').forEach(a=>{a.addEventListener('click',()=>document.getElementById('mobMenu').classList.remove('open'))});
   document.getElementById('contactForm').addEventListener('submit', function(e) {
     e.preventDefault();
+    const tsToken = document.querySelector('[name="cf-turnstile-response"]');
+    if(!tsToken || !tsToken.value) {
+      alert('Te rugăm să completezi verificarea de securitate.');
+      return;
+    }
     const form = e.target;
-    const get = name => (form.querySelector('[name="'+name+'"]') || {}).value || '';
+    const get = function(name) {
+      const el = form.querySelector('[name="' + name + '"]');
+      return el ? el.value : '';
+    };
     const subject = encodeURIComponent('Solicitare BlocMan SRL');
     const body = encodeURIComponent(
-      'Nume: ' + get('nume') + '
-' +
-      'Telefon: ' + get('telefon') + '
-' +
-      'Email: ' + get('email') + '
-' +
-      'Adresa imobil: ' + get('adresa') + '
-' +
-      'Nr. apartamente: ' + get('apartamente') + '
-
-' +
-      'Mesaj:
-' + get('mesaj')
+      'Nume: ' + get('nume') + '%0A' +
+      'Telefon: ' + get('telefon') + '%0A' +
+      'Email: ' + get('email') + '%0A' +
+      'Adresa imobil: ' + get('adresa') + '%0A' +
+      'Nr. apartamente: ' + get('apartamente') + '%0A%0A' +
+      'Mesaj: ' + get('mesaj')
     );
     window.location.href = 'mailto:contact@blocmansrl.ro?subject=' + subject + '&body=' + body;
     const btn = document.getElementById('submitBtn');
     const note = document.getElementById('formNote');
-    if(btn){ btn.textContent = 'Se deschide aplicația mail...'; btn.style.background='#16a34a'; btn.style.color='#fff'; }
-    if(note) note.textContent = 'Alege aplicația de mail pentru a trimite mesajul.';
+    if(btn){ btn.textContent = 'Se deschide aplicatia mail...'; btn.style.background='#16a34a'; btn.style.color='#fff'; }
+    if(note) note.textContent = 'Alege aplicatia de mail pentru a trimite mesajul.';
   });
+
+  
 
   
 </script>
